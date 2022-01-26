@@ -1,0 +1,12 @@
+pluginManagement {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+rootProject.name = 'wiremock-generating-gradle-plugin'
+
+include 'plugin'
+include 'integration-tests'
