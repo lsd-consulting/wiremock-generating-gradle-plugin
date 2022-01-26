@@ -4,6 +4,7 @@ plugins {
     // TODO Remove SpringBoot
     id 'org.springframework.boot' version '2.4.2' apply false
     id 'java'
+    id 'com.palantir.git-version' version '0.12.3'
 //    id 'java-gradle-plugin'
 //    id 'java-library'
 //    id 'maven-publish'
@@ -15,9 +16,9 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
-
 group = "io.github.lsd-consulting"
-version = "1.0"
+version = gitVersion().replaceAll("^v", "")
+println "Build Version = ${version}"
 
 subprojects {
     group = rootProject.getGroup()
@@ -38,3 +39,6 @@ allprojects {
         }
     }
 }
+
+apply from: 'hooks.gradle'
+apply from: 'publishing.gradle'

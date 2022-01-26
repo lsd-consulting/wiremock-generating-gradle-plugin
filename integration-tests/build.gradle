@@ -4,6 +4,14 @@ plugins {
 
 test {
     useJUnitPlatform()
+    afterSuite { desc, result ->
+        if (!desc.parent) {
+            logger.lifecycle("Integration test results: (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)")
+            if (result.testCount == 0) {
+                throw new IllegalStateException("No tests were found. Failing the build")
+            }
+        }
+    }
 }
 
 // The following setting is for handling auto-generated Spring config properties by the messaging library
