@@ -1,13 +1,15 @@
-import org.springframework.boot.gradle.plugin.SpringBootPlugin
+//import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 plugins {
     // TODO Remove SpringBoot
-    id 'org.springframework.boot' version '2.4.2' apply false
+//    id 'org.springframework.boot' version '2.4.2' apply false
     id 'java'
+    id 'signing'
+    id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
     id 'com.palantir.git-version' version '0.12.3'
 //    id 'java-gradle-plugin'
 //    id 'java-library'
-//    id 'maven-publish'
+    id 'maven-publish'
 }
 
 
@@ -32,12 +34,12 @@ allprojects {
     }
 
     // Dependency Versioning
-    apply plugin: 'io.spring.dependency-management'
-    dependencyManagement {
-        imports {
-            mavenBom SpringBootPlugin.BOM_COORDINATES
-        }
-    }
+//    apply plugin: 'io.spring.dependency-management'
+//    dependencyManagement {
+//        imports {
+//            mavenBom SpringBootPlugin.BOM_COORDINATES
+//        }
+//    }
 }
 
 apply from: 'hooks.gradle'
