@@ -1,5 +1,6 @@
 plugins {
-    id 'java'
+    id 'java-library'
+    id 'maven-publish'
 }
 
 test {
@@ -14,22 +15,9 @@ test {
     }
 }
 
-// The following setting is for handling auto-generated Spring config properties by the messaging library
-sourceSets {
-    main {
-        resources.srcDirs "$projectDir/build/generated/resources"
-    }
-}
-
-configurations {
-    all {
-//        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
-//        exclude group: 'ch.qos.logback', module: 'logback-classic'
-//        exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
-    }
-}
-
 dependencies {
+    implementation project(":integration-test-api")
+
     implementation 'org.springframework.boot:spring-boot-starter-web:2.5.6'
     compileOnly 'com.github.tomakehurst:wiremock:2.27.2'
     testImplementation 'com.github.tomakehurst:wiremock:2.27.2'
@@ -54,4 +42,29 @@ dependencies {
     testImplementation 'org.jeasy:easy-random-core:4.1.0'
     testImplementation 'org.mockito:mockito-core:2.+'
     testImplementation 'org.awaitility:awaitility:4.1.1'
+}
+
+tasks.create(type: Jar, name: 'stubsJar') {
+    baseName = project.name
+    classifier = 'stubs'
+    from layout.buildDirectory.dir("stubsClasses")
+}
+
+task compileStubs(type: JavaCompile) {
+    classpath  = compileJava.classpath
+    source project.files { layout.buildDirectory.dir("generated/sources/annotationProcessor/java/main") }
+    destinationDirectory.set(file("$buildDir/stubsClasses"))
+}
+
+compileJava.finalizedBy(compileStubs)
+stubsJar.dependsOn 'compileStubs'
+
+
+publishing {
+    publications {
+        stubs(MavenPublication) {
+            artifactId project.name
+            artifact stubsJar
+        }
+    }
 }

@@ -10,4 +10,7 @@
 ![Maven Central](https://img.shields.io/maven-central/v/io.github.lsd-consulting/wiremock-generating-gradle-plugin)
 
 ## About
-This is a Gradle plugin for generating Wiremock stubs from Spring @Contraoller & @RestController annotated classes 
+This is a Gradle plugin for generating Wiremock stubs from Spring @Controller & @RestController annotated classes 
+
+TODO:
+- fix Jacoco/Codecov

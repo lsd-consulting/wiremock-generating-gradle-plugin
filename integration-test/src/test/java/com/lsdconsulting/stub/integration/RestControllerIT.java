@@ -2,7 +2,7 @@ package com.lsdconsulting.stub.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.lsdconsulting.stub.integration.controller.RestControllerExampleStub;
+import com.lsdconsulting.stub.integration.controller.GetRestControllerStub;
 import com.lsdconsulting.stub.integration.model.Greeting;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.AfterAll;
@@ -21,7 +21,7 @@ public class RestControllerIT {
     private static WireMockServer wireMockServer;
 
     private final RestTemplate restTemplate = new RestTemplate();
-    private final RestControllerExampleStub underTest = new RestControllerExampleStub(new ObjectMapper());
+    private final GetRestControllerStub underTest = new GetRestControllerStub(new ObjectMapper());
 
     @BeforeAll
     static void setupAll() {
@@ -37,11 +37,11 @@ public class RestControllerIT {
     @Test
     void shouldHandleGetMapping() {
         String name = RandomStringUtils.randomAlphabetic(10);
-        underTest.getResource1(Greeting.builder().name(name).build());
+        underTest.getResourceWithNoParams(Greeting.builder().name(name).build());
 
-        ResponseEntity<Greeting> response = restTemplate.getForEntity("http://localhost:8080/root1/resource1", Greeting.class);
+        ResponseEntity<Greeting> response = restTemplate.getForEntity("http://localhost:8080/getController/resourceWithNoParams", Greeting.class);
 
         assertThat(requireNonNull(response.getBody()).getName(), is(name));
-        underTest.verifyGetResource1();
+        underTest.verifyGetResourceWithNoParams();
     }
 }

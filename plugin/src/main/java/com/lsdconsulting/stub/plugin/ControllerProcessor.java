@@ -5,7 +5,6 @@ import com.lsdconsulting.stub.plugin.model.ControllerModel;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import lombok.SneakyThrows;
-import org.apache.commons.text.CaseUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +22,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
 import java.util.Set;
+
+import static org.gradle.internal.impldep.org.codehaus.plexus.util.StringUtils.capitalise;
 
 public class ControllerProcessor extends AbstractProcessor {
     private RestControllerAnnotationHandler restControllerAnnotationHandler;
@@ -69,19 +70,19 @@ public class ControllerProcessor extends AbstractProcessor {
             Set<? extends Element> annotatedElements = roundEnv.getElementsAnnotatedWith(annotation);
             annotatedElements.forEach(element -> {
                 if (element.getAnnotation(RestController.class) != null) {
-                    messager.printMessage(Diagnostic.Kind.NOTE, "RestController annotation");
-                    restControllerAnnotationHandler.restControllerAnnotationHandler(controllerModel, element);
+                    messager.printMessage(Diagnostic.Kind.NOTE, "Processing RestController annotation");
+                    restControllerAnnotationHandler.handle(element, controllerModel);
                 } else if (element.getAnnotation(GetMapping.class) != null) {
-                    messager.printMessage(Diagnostic.Kind.NOTE, "GetMapping annotation");
+                    messager.printMessage(Diagnostic.Kind.NOTE, "Processing GetMapping annotation");
                     String[] path = element.getAnnotation(GetMapping.class).path();
                     String[] value = element.getAnnotation(GetMapping.class).value();
                     if (path.length > 0) {
-                        controllerModel.setUrl(path[0]);
+                        controllerModel.setSubResource(path[0]);
                     } else if (value.length > 0) {
-                        controllerModel.setUrl(value[0]);
+                        controllerModel.setSubResource(value[0]);
                     }
 
-                    controllerModel.setMethodName(CaseUtils.toCamelCase(element.getSimpleName().toString(), true));
+                    controllerModel.setMethodName(capitalise(element.getSimpleName().toString()));
                     controllerModel.setResponseType(element.asType().toString().replace("()", ""));
 
                 } else {
@@ -105,7 +106,7 @@ public class ControllerProcessor extends AbstractProcessor {
             JavaFileObject builderFile2 = processingEnv.getFiler().createSourceFile(controllerModel.getStubBaseFullyQualifiedName());
             try (PrintWriter writer = new PrintWriter(builderFile2.openWriter())) {
                 stubBaseTemplate.evaluate(writer, Map.of(
-                        "stubPackageName", controllerModel.getStubPackageName()
+                        "packageName", controllerModel.getPackageName()
                 ));
             }
         } catch (IOException e) {
@@ -119,14 +120,7 @@ public class ControllerProcessor extends AbstractProcessor {
         try {
             JavaFileObject builderFile = processingEnv.getFiler().createSourceFile(controllerModel.getStubFullyQualifiedName());
             try (PrintWriter writer = new PrintWriter(builderFile.openWriter())) {
-                stubTemplate.evaluate(writer, Map.of(
-                        "stubPackageName", controllerModel.getStubPackageName(),
-                        "stubClassName", controllerModel.getStubClassName(),
-                        "methodName", controllerModel.getMethodName(),
-                        "responseType", controllerModel.getResponseType(),
-                        "rootUrl", controllerModel.getRootUrl(),
-                        "url", controllerModel.getUrl()
-                ));
+                stubTemplate.evaluate(writer, Map.of("model", controllerModel));
             }
         } catch (IOException e) {
             e.printStackTrace();

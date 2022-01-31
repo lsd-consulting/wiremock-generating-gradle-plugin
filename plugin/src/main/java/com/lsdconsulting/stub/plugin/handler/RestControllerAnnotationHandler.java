@@ -11,11 +11,11 @@ import javax.lang.model.util.Elements;
 public class RestControllerAnnotationHandler {
     private final Elements elementUtils;
 
-    public void restControllerAnnotationHandler(final ControllerModel controllerModel, final Element element) {
-        controllerModel.setRootUrl(element.getAnnotation(RestController.class).value());
+    public void handle(final Element element, final ControllerModel controllerModel) {
+        controllerModel.setRootResource(element.getAnnotation(RestController.class).value());
         controllerModel.setStubClassName(element.getSimpleName().toString() + "Stub");
-        controllerModel.setStubPackageName(elementUtils.getPackageOf(element).getQualifiedName().toString());
-        controllerModel.setStubFullyQualifiedName(controllerModel.getStubPackageName() + "." + controllerModel.getStubClassName());
-        controllerModel.setStubBaseFullyQualifiedName(controllerModel.getStubPackageName() + ".StubBase");
+        controllerModel.setPackageName(elementUtils.getPackageOf(element).getQualifiedName().toString());
+        controllerModel.setStubFullyQualifiedName(controllerModel.getPackageName() + "." + controllerModel.getStubClassName());
+        controllerModel.setStubBaseFullyQualifiedName(controllerModel.getPackageName() + ".StubBase");
     }
 }

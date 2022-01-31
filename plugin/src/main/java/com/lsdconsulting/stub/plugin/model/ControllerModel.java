@@ -4,12 +4,18 @@ import lombok.Data;
 
 @Data
 public class ControllerModel {
-    String stubFullyQualifiedName;
+    String packageName;
+
+    // Stub base
     String stubBaseFullyQualifiedName;
-    String stubPackageName;
+    String stubBaseClassName;
+
+    // Stub
+    String stubFullyQualifiedName;
     String stubClassName;
+
     String methodName;
     String responseType;
-    String rootUrl;
-    String url;
+    String rootResource;
+    String subResource;
 }

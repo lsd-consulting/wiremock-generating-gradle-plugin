@@ -1,8 +1,7 @@
-package {{stubPackageName}};
+package {{packageName}};
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
-import lombok.SneakyThrows;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
@@ -32,8 +31,11 @@ class StubBase {
         );
     }
 
-    @SneakyThrows
     String buildBody(final Object object) {
-        return objectMapper.writeValueAsString(object);
+        try {
+            return objectMapper.writeValueAsString(object);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

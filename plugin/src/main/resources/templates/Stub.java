@@ -1,4 +1,4 @@
-package {{stubPackageName}};
+package {{model.packageName}};
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -8,33 +8,33 @@ import java.util.List;
 import javax.annotation.processing.Generated;
 
 @Generated("com.lsdconsulting.stub.plugin.ControllerProcessor")
-public class {{stubClassName}} extends StubBase {
+public class {{model.stubClassName}} extends StubBase {
 
     private static final int OK = 200;
     public static final int ONCE = 1;
 
     private ObjectMapper objectMapper;
 
-    public {{stubClassName}}(ObjectMapper objectMapper) {
+    public {{model.stubClassName}}(ObjectMapper objectMapper) {
         super(objectMapper);
         this.objectMapper = objectMapper;
     }
 
-    private static final String {{methodName.toUpperCase()}}_URL = "{{rootUrl}}{{url}}";
+    private static final String {{model.methodName.toUpperCase()}}_URL = "{{model.rootResource}}{{model.subResource}}";
 
-    public void get{{methodName}}({{responseType}} response) {
-        buildGet(format({{methodName.toUpperCase()}}_URL), OK, buildBody(response));
+    public void get{{model.methodName}}({{model.responseType}} response) {
+        buildGet(format({{model.methodName.toUpperCase()}}_URL), OK, buildBody(response));
     }
 
-    public void get{{methodName}}(int status, {{responseType}} response) {
-        buildGet(format({{methodName.toUpperCase()}}_URL), status, buildBody(response));
+    public void get{{model.methodName}}(int status, {{model.responseType}} response) {
+        buildGet(format({{model.methodName.toUpperCase()}}_URL), status, buildBody(response));
     }
 
-    public void verifyGet{{methodName}}() {
-        verifyGet{{methodName}}(ONCE);
+    public void verifyGet{{model.methodName}}() {
+        verifyGet{{model.methodName}}(ONCE);
     }
 
-    public void verifyGet{{methodName}}(final int times) {
-        verify(times, getRequestedFor(urlEqualTo(format({{methodName.toUpperCase()}}_URL))));
+    public void verifyGet{{model.methodName}}(final int times) {
+        verify(times, getRequestedFor(urlEqualTo(format({{model.methodName.toUpperCase()}}_URL))));
     }
 }
