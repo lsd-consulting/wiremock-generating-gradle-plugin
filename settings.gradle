@@ -8,6 +8,4 @@ pluginManagement {
 
 rootProject.name = 'wiremock-generating-gradle-plugin'
 
-include 'integration-test-api'
-include 'integration-test'
 include 'plugin'

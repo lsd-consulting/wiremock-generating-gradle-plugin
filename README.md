@@ -14,3 +14,28 @@ This is a Gradle plugin for generating Wiremock stubs from Spring @Controller & 
 
 TODO:
 - fix Jacoco/Codecov
+
+This Gradle plugin implements the following functionality:
+
+```groovy
+task compileStubs(type: JavaCompile) {
+    JavaCompile compileJava = project.getTasksByName("compileJava", true).toArray()[0]
+    classpath = compileJava.classpath
+    source = project.getLayout().getBuildDirectory().dir("generated-stub-sources")
+    def stubsClassesDir = file("${project.getBuildDir()}/generated-stub-classes")
+    destinationDir(stubsClassesDir)
+    compileJava.finalizedBy(compileStubs)
+}
+
+task stubsJar(type: Jar) {
+    JavaCompile compileJavaStubs = project.getTasksByName("compileStubs", true).toArray()[0]
+    setDescription('Java Wiremock stubs JAR')
+    setGroup("Verification")
+    archiveBaseName.convention(project.provider(project::getName))
+    archiveClassifier.convention("wiremock-stubs")
+    from(compileJavaStubs.getDestinationDirectory())
+    dependsOn(compileJavaStubs)
+    compileJavaStubs.finalizedBy(stubsJar)
+    project.artifacts(artifactHandler -> artifactHandler.add("archives", stubsJar))
+}
+```
